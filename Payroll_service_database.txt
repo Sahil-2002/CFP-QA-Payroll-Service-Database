@@ -1,0 +1,135 @@
+// UC1 : Create payroll service database 
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+mysql> create database Payroll_service_database;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> show databases;
++--------------------------+
+| Database                 |
++--------------------------+
+| information_schema       |
+| mysql                    |
+| payroll_service_database |
+| performance_schema       |
+| sys                      |
++--------------------------+
+mysql> use Payroll_service_database;
+Database changed
+
+// UC2 : create employee payroll table in payroll service database
+
+mysql> create table employee_payroll(
+    -> id INT unsigned NOT NULL AUTO_INCREMENT,
+    -> name VARCHAR(100) NOT NULL,
+    -> Salary DOUBLE NOT NULL,
+    -> Start DATE NOT NULL,
+    -> PRIMARY KEY (id)
+    -> );
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> describe employee_payroll;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| id     | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(100) | NO   |     | NULL    |                |
+| Salary | double       | NO   |     | NULL    |                |
+| Start  | date         | NO   |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+
+// UC3 : Ability to create employee payroll data in the payroll service database as part of CURD Operation - Use payroll_service database
+
+ INSERT INTO employee_payroll (name , Salary , Start) VALUES ('Sahil',50000.00,'2020-12-5'),('Prajwal',40000.00,'2019-05-22'),('Pranav',60000.00,'2019-07-22');
+Query OK, 3 rows affected (0.08 sec)
+
+// UC4 : Ability to retrieve all the employee payroll data that is added to payroll service database
+mysql> SELECT * FROM employee_payroll;
++----+---------+--------+------------+
+| id | name    | Salary | Start      |
++----+---------+--------+------------+
+|  1 | Sahil   |  50000 | 2020-12-05 |
+|  2 | Prajwal |  40000 | 2019-05-22 |
+|  3 | Pranav  |  60000 | 2019-07-22 |
++----+---------+--------+------------+
+
+// UC5 : Ability to retrieve salary data for a particular employee as well as all employees who have joined in a particular data range from the payroll service database
+
+mysql> SELECT Salary FROM employee_payroll WHERE name = 'Sahil';
++--------+
+| Salary |
++--------+
+|  50000 |
++--------+
+
+mysql> SELECT * FROM employee_payroll WHERE Start BETWEEN CAST('2020-06-06' AS DATE) AND DATE(NOW());
++----+-------+--------+------------+
+| id | name  | Salary | Start      |
++----+-------+--------+------------+
+|  1 | Sahil |  50000 | 2020-12-05 |
++----+-------+--------+------------+
+
+// UC6 : Ability to add Gender to Employee Payroll Table and Update the Rows to reflect the correct Employee Gender
+
+
+mysql> ALTER TABLE employee_payroll ADD Gender CHAR(1) AFTER name;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPDATE employee_payroll set gender = 'M' WHERE name = 'Sahil' or name = 'Prajwal' or name = 'Pranav';
+Query OK, 3 rows affected (0.08 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> SELECT * FROM employee_payroll;
++----+---------+--------+--------+------------+
+| id | name    | Gender | Salary | Start      |
++----+---------+--------+--------+------------+
+|  1 | Sahil   | M      |  50000 | 2020-12-05 |
+|  2 | Prajwal | M      |  40000 | 2019-05-22 |
+|  3 | Pranav  | M      |  60000 | 2019-07-22 |
++----+---------+--------+--------+------------+
+
+// UC7 : Ability to find sum, average, min, max and number of male and female employees
+
+ SELECT GENDER , SUM(SALARY) FROM employee_payroll GROUP BY gender;
++--------+-------------+
+| GENDER | SUM(SALARY) |
++--------+-------------+
+| M      |      150000 |
+| F      |       20000 |
++--------+-------------+
+
+ SELECT GENDER , AVG(SALARY) FROM employee_payroll GROUP BY gender;
++--------+-------------+
+| GENDER | AVG(SALARY) |
++--------+-------------+
+| M      |       50000 |
+| F      |       20000 |
++--------+-------------+
+
+mysql> SELECT GENDER , MIN(SALARY) FROM employee_payroll GROUP BY gender;
++--------+-------------+
+| GENDER | MIN(SALARY) |
++--------+-------------+
+| M      |       40000 |
+| F      |       20000 |
++--------+-------------+
+
+mysql> SELECT GENDER , MAX(salary) FROM employee_payroll GROUP BY GENDER;
++--------+-------------+
+| GENDER | MAX(salary) |
++--------+-------------+
+| M      |       60000 |
+| F      |       20000 |
++--------+-------------+
+
+

@@ -26,7 +26,8 @@ The database consists of the following tables:
 
 ## Files Included
 - `README.md`: This file providing information about the project.
-- `Payroll_service_database`: Contains UC1 TO UC7
+- `Payroll_service_database`: Contains UC1 TO UC12
+
 
 
 
